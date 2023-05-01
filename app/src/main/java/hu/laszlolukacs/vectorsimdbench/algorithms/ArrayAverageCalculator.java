@@ -1,4 +1,4 @@
-package hu.laszlolukacs.vectorsimdbench;
+package hu.laszlolukacs.vectorsimdbench.algorithms;
 
 import jdk.incubator.vector.DoubleVector;
 import jdk.incubator.vector.VectorSpecies;

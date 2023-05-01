@@ -14,7 +14,7 @@ java {
     modularity.inferModulePath = true
 }
 
-var incubatorArguments = ['--enable-preview', '--add-modules', 'jdk.incubator.vector']
+var incubatorArguments = ['--add-modules', 'jdk.incubator.vector']
 var diagnosticsArguments = ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintIntrinsics']
 var compilerBlackholeArgument = '-Djmh.blackhole.mode=COMPILER'
 
@@ -40,14 +40,19 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.named('run') {
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
+    jvmArgs += incubatorArguments
+}
+
 task runtimeBenchmark(type: JavaExec) {
     dependsOn build
     javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(17) }
     jvmArgs += incubatorArguments
-    jvmArgs += diagnosticsArguments
+//    jvmArgs += diagnosticsArguments
     jvmArgs += compilerBlackholeArgument
     group = 'Execution'
     description = 'Runs the benchmark code'
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'hu.laszlolukacs.vectorsimdbench.App'
+    mainClass = 'hu.laszlolukacs.vectorsimdbench.BenchmarkMain'
 }
