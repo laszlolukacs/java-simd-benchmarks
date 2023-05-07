@@ -68,22 +68,8 @@ public class RgbToGrayscale {
             bFloats[i] = rgbFloats[(i * numberOfChannels) + alphaPadding + 2];
         }
         
-        final VectorSpecies<Float> SPECIES = FloatVector.SPECIES_PREFERRED;
-        FloatVector resultVec = FloatVector.zero(SPECIES);
-        int i = 0;
-        for (; i < SPECIES.loopBound(resultsLength); i += SPECIES.length()) {
-            FloatVector redVec = FloatVector.fromArray(SPECIES, rFloats, i);
-            FloatVector greenVec = FloatVector.fromArray(SPECIES, gFloats, i);
-            FloatVector blueVec = FloatVector.fromArray(SPECIES, bFloats, i);
-            resultVec = ((redVec.mul(R_COEFF))
-                    .add((greenVec).mul(G_COEFF))
-                    .add((blueVec).mul(B_COEFF)))
-                    .mul(255.0f);
-            resultVec.intoArray(grayscalePixelsF, i);
-        }
-        
-        // fallback when vectorization would be out-of-array-bounds
-        for (; i < resultsLength; i++) {
+        for (int i = 0; i < resultsLength; i++) {
+            // TODO: vectorize
             grayscalePixelsF[i] =
                     ((rFloats[i] * R_COEFF) + (gFloats[i] * G_COEFF) + (bFloats[i] * B_COEFF)) * 255.0f;
         }
