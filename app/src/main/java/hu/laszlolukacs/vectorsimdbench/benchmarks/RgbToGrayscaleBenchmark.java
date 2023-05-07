@@ -1,6 +1,7 @@
 package hu.laszlolukacs.vectorsimdbench.benchmarks;
 
 import hu.laszlolukacs.vectorsimdbench.algorithms.RgbToGrayscale;
+import hu.laszlolukacs.vectorsimdbench.utils.ImageUtils;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -26,8 +27,8 @@ public class RgbToGrayscaleBenchmark {
         @Setup(Level.Trial)
         public void setUp() throws IOException {
             URL imageUrl = RgbToGrayscaleBenchmark.class.getResource(resourceName);
-            rgbByteArray = RgbToGrayscale.extractBytesFromImage(imageUrl.openStream());
-            rgbFloatArray = RgbToGrayscale.extractFloatsFromImage(imageUrl.openStream());
+            rgbByteArray = ImageUtils.extractBytesFromImage(imageUrl.openStream());
+            rgbFloatArray = ImageUtils.extractFloatsFromImage(imageUrl.openStream());
         }
     }
     
@@ -39,13 +40,19 @@ public class RgbToGrayscaleBenchmark {
     
     @Benchmark
     @Fork(value = 1)
-    public void rgbToGrayscaleSimdF(Blackhole bh, RgbToGrayscaleBenchmarkState state) {
-        bh.consume(RgbToGrayscale.rgbToGrayscaleSimdF(state.rgbFloatArray));
+    public void rgbToGrayscaleSimdU(Blackhole bh, RgbToGrayscaleBenchmarkState state) {
+        bh.consume(RgbToGrayscale.rgbToGrayscaleSimdU(state.rgbByteArray));
     }
     
     @Benchmark
     @Fork(value = 1)
-    public void rgbToGrayscaleSimdU(Blackhole bh, RgbToGrayscaleBenchmarkState state) {
-        bh.consume(RgbToGrayscale.rgbToGrayscaleSimdU(state.rgbByteArray));
+    public void rgbToGrayscaleScalarF(Blackhole bh, RgbToGrayscaleBenchmarkState state) {
+        bh.consume(RgbToGrayscale.rgbToGrayscaleScalarF(state.rgbFloatArray));
+    }
+    
+    @Benchmark
+    @Fork(value = 1)
+    public void rgbToGrayscaleSimdF(Blackhole bh, RgbToGrayscaleBenchmarkState state) {
+        bh.consume(RgbToGrayscale.rgbToGrayscaleSimdF(state.rgbFloatArray));
     }
 }

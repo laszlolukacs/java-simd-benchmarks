@@ -1,6 +1,7 @@
 package hu.laszlolukacs.vectorsimdbench;
 
 import hu.laszlolukacs.vectorsimdbench.algorithms.RgbToGrayscale;
+import hu.laszlolukacs.vectorsimdbench.utils.ImageUtils;
 import jdk.incubator.vector.FloatVector;
 import jdk.incubator.vector.VectorShape;
 
@@ -17,16 +18,21 @@ public class App {
         
         try {
             var resourceAsStream = RgbToGrayscale.class.getResourceAsStream("/colored_input_hires_01.jpg");
-            BufferedImage image = RgbToGrayscale.loadImage(resourceAsStream);
+            BufferedImage image = ImageUtils.loadImage(resourceAsStream);
+            byte[] imageBytes = ImageUtils.extractBytes(image);
+            float[] imageFloats = ImageUtils.extractFloats(image);
             
-            byte[] imageBytes = RgbToGrayscale.extractBytes(image);
-            float[] imageFloats = RgbToGrayscale.extractFloats(image);
+            float[] grayscaleBytesScalar = RgbToGrayscale.rgbToGrayscaleScalarF(imageFloats);
+            ImageUtils.writeGrayscaleImage("grayscale_output_scalarf.png", grayscaleBytesScalar, image.getWidth(), image.getHeight());
             
-            byte[] grayscaleBytesScalar = RgbToGrayscale.rgbToGrayscaleScalar(imageBytes);
-            RgbToGrayscale.writeImage("grayscale_output_scalar.png", grayscaleBytesScalar, image.getWidth(), image.getHeight());
+            float[] grayscaleBytes = RgbToGrayscale.rgbToGrayscaleSimdF(imageFloats);
+            ImageUtils.writeGrayscaleImage("grayscale_output_simdf.png", grayscaleBytes, image.getWidth(), image.getHeight());
             
-            byte[] grayscaleBytes = RgbToGrayscale.rgbToGrayscaleSimdU(imageBytes);
-            RgbToGrayscale.writeImage("grayscale_output_simd.png", grayscaleBytes, image.getWidth(), image.getHeight());
+            byte[] grayscaleBytesScalarU = RgbToGrayscale.rgbToGrayscaleScalar(imageBytes);
+            ImageUtils.writeGrayscaleImage("grayscale_output_scalaru.png", grayscaleBytesScalarU, image.getWidth(), image.getHeight());
+            
+            byte[] grayscaleBytesU = RgbToGrayscale.rgbToGrayscaleSimdU(imageBytes);
+            ImageUtils.writeGrayscaleImage("grayscale_output_simdu.png", grayscaleBytesU, image.getWidth(), image.getHeight());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
