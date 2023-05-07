@@ -38,16 +38,6 @@ public class RgbToGrayscale {
         
         float[] grayscalePixelsF = new float[resultsLength];
         
-        final VectorSpecies<Float> SPECIES = FloatVector.SPECIES_PREFERRED;
-        for (int i = 0; i < resultsLength; i++) {
-            float r = rgbFloats[(i * numberOfChannels) + alphaPadding];
-            float g = rgbFloats[(i * numberOfChannels) + alphaPadding + 1];
-            float b = rgbFloats[(i * numberOfChannels) + alphaPadding + 2];
-            float brightness = (R_COEFF * r + G_COEFF * g + B_COEFF * b) * 255.0f;
-            float brightnessClamped = Math.max(0.0f, Math.min(255.0f, brightness));
-            grayscalePixelsF[i] = (float) Math.floor(brightnessClamped);
-        }
-        
         for (int i = 0; i < resultsLength; i++) {
             float r = rgbFloats[(i * numberOfChannels) + alphaPadding];
             float g = rgbFloats[(i * numberOfChannels) + alphaPadding + 1];
